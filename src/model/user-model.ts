@@ -10,6 +10,10 @@ export type CreateUserRequest = {
   name: string;
   password: string;
 };
+export type LoginUserRequest = {
+  username: string;
+  password: string;
+};
 
 export function toUserResponse(user: User): UserResponse {
   return {

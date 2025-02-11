@@ -52,4 +52,15 @@ export class ContactService {
     });
     return toContactResponse(contact);
   }
+  static async remove(user: User, id: number): Promise<ContactResponse> {
+    // TODO: Implement contact removal logic here
+    await this.checkContactMustExits(user.username, id);
+    const contact = await prismaClient.contact.delete({
+      where: {
+        id: id,
+        username: user.username,
+      },
+    });
+    return toContactResponse(contact);
+  }
 }

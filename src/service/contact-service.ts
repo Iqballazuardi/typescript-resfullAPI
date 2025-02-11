@@ -4,6 +4,7 @@ import { ContactValidation } from "../validation/contact-validation";
 import { Validation } from "../validation/validation";
 import { prismaClient } from "../app/database";
 import { logger } from "../app/logging";
+import { ResponseError } from "../error/response-error";
 
 export class ContactService {
   static async create(user: User, request: CreateContactRequest): Promise<ContactResponse> {
@@ -18,6 +19,19 @@ export class ContactService {
       data: record,
     });
     logger.info(contact);
+    return toContactResponse(contact);
+  }
+  static async get(user: User, id: number): Promise<ContactResponse> {
+    // TODO: Implement contact retrieval logic here
+    const contact = await prismaClient.contact.findUnique({
+      where: {
+        id: id,
+        username: user.username,
+      },
+    });
+    if (!contact) {
+      throw new ResponseError(404, "Contact not found");
+    }
     return toContactResponse(contact);
   }
 }

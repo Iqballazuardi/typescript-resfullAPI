@@ -51,6 +51,16 @@ export class UserController {
       next(error);
     }
   }
+  static async logout(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      await UserService.logout(req.user!);
+      res.status(200).json({
+        data: "OK",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 // In the UserController class, you need to implement the methods for registering a new user, logging in a user, and retrieving a user's information. You can use the provided UserRequest type and the UserService class to handle the business logic.

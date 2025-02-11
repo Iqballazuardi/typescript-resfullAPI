@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateUserRequest, LoginUserRequest } from "../model/user-model";
+import { CreateUserRequest, LoginUserRequest, UpdateUserRequest } from "../model/user-model";
 import { UserService } from "../service/user-service";
 import { UserRequest } from "../type/user-request";
 
@@ -40,4 +40,17 @@ export class UserController {
       next(error);
     }
   }
+  static async update(req: UserRequest, res: Response, next: NextFunction) {
+    try {
+      const request: UpdateUserRequest = req.body as UpdateUserRequest;
+      const response = await UserService.update(req.user!, request);
+      res.status(200).json({
+        data: response,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
+
+// In the UserController class, you need to implement the methods for registering a new user, logging in a user, and retrieving a user's information. You can use the provided UserRequest type and the UserService class to handle the business logic.

@@ -5,6 +5,7 @@ import { Validation } from "../validation/validation";
 import { prismaClient } from "../app/database";
 import { logger } from "../app/logging";
 import { ResponseError } from "../error/response-error";
+import { Pageable } from "../model/page";
 
 export class ContactService {
   static async create(user: User, request: CreateContactRequest): Promise<ContactResponse> {
@@ -62,5 +63,40 @@ export class ContactService {
       },
     });
     return toContactResponse(contact);
+  }
+  static async search(user: User, request: SearchContactRequest): Promise<Pageable<ContactResponse>> {
+    // TODO: Implement contact search logic here
+    const searchRequest = Validation.validate(ContactValidation.SEARCH, request);
+    const skip = (searchRequest.page - 1) * searchRequest.size;
+    const filters = [];
+    // check name exists
+    if (searchRequest.name) {
+    }
+    // check email exists
+    // check phone exists
+
+    const contacts = await prismaClient.contact.findMany({
+      where: {
+        username: user.username,
+        AND: filters,
+      },
+
+      take: searchRequest.size,
+      skip: skip,
+    });
+    const contact = await prismaClient.contact.count({
+      where: {
+        username: user.username,
+        AND: filters,
+      },
+    });
+    return {
+      data: contacts.map((coantact) => toContactResponse(coantact)),
+      paging: {
+        current_page: searchRequest.page,
+        total_page: Math.ceil(total / searchRequest.size),
+        size: searchRequest.size,
+      },
+    };
   }
 }
